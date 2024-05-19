@@ -9,6 +9,9 @@ import uuid
 
 
 def count_calls(method: Callable) -> Callable:
+    """
+    Decorator for Cache class methods to track call count
+    """
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         key = method.__qualname__
