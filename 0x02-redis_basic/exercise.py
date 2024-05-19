@@ -21,6 +21,9 @@ def count_calls(method: Callable) -> Callable:
 
 
 def call_history(method: Callable) -> Callable:
+    """
+    Decorator for Cache class methods to track input output history
+    """
     @wraps(method)
     def wrapper(self, *args):
         key = method.__qualname__
@@ -32,6 +35,9 @@ def call_history(method: Callable) -> Callable:
 
 
 def replay(func: Callable) -> None:
+    """
+    display the history of calls of a particular function
+    """
     client = redis.Redis()
     key = func.__qualname__
     inputs = [i for i in client.lrange("{}:inputs".format(key), 0, -1)]
