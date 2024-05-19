@@ -28,6 +28,18 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
+def replay(func: Callable) -> None:
+    client = redis.Redis()
+    key = func.__qualname__
+    inputs = [i for i in client.lrange("{}:inputs".format(key), 0, -1)]
+    outputs = [i for i in client.lrange("{}:outputs".format(key), 0, -1)]
+    count = client.get(key).decode('utf-8')
+    print("Cache.store was called {} times:".format(count))
+    for item in zip(inputs, outputs):
+        print("{}(*{}) -> {}".format(key, item[0].decode(
+              'utf-8'), item[1].decode('utf-8')))
+
+
 class Cache():
     """
     store an instance of the Redis client
