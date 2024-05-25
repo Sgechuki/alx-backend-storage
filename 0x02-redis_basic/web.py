@@ -18,11 +18,13 @@ def counter(fn: Callable) -> Callable:
         client.incr("count:{}".format(url))
         cache_page = client.get("{}".format(url))
         if cache_page:
+            print(cache_page)
             return cache_page.decode('utf-8')
         r = fn(url)
-        client.set("{}".format(url), r, 10)
+        client.setex("{}".format(url), r, 10)
         return r
     return wrapper
+
 
 @counter
 def get_page(url: str) -> str:

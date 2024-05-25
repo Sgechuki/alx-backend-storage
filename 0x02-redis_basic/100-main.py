@@ -2,5 +2,12 @@
 """
 Main file
 """
+import redis
 get_page = __import__('web').get_page
-get_page("http://slowwly.robertomurray.co.uk")
+
+
+url = "http://slowwly.robertomurray.co.uk"
+get_page(url)
+
+client = redis.Redis()
+print(client.get("count:{}".format(url)))
