@@ -9,6 +9,9 @@ from typing import Callable
 
 
 def counter(fn: Callable) -> Callable:
+    """
+    Counter decorator
+    """
     @wraps(fn)
     def wrapper(url: str) -> str:
         client = redis.Redis()
@@ -21,7 +24,7 @@ def counter(fn: Callable) -> Callable:
         return r
     return wrapper
 
-
+@counter
 def get_page(url: str) -> str:
     """
     uses the requests module to obtain
