@@ -18,10 +18,10 @@ def counter(fn: Callable) -> Callable:
         client.incr("count:{}".format(url))
         cache_page = client.get("{}".format(url))
         if cache_page:
-            print(cache_page)
             return cache_page.decode('utf-8')
         r = fn(url)
-        client.setex("{}".format(url), r, 10)
+        client.set("count:{}".format(url), 0)
+        client.setex("{}".format(url), 10, r)
         return r
     return wrapper
 
