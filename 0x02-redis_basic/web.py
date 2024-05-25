@@ -8,20 +8,22 @@ from functools import wraps
 from typing import Callable
 
 
+client = redis.Redis()
+
+
 def counter(fn: Callable) -> Callable:
     """
     Counter decorator
     """
     @wraps(fn)
     def wrapper(url: str) -> str:
-        client = redis.Redis()
         client.incr("count:{}".format(url))
-        cache_page = client.get("{}".format(url))
+        cache_page = client.get("result:{}".format(url))
         if cache_page:
             return cache_page.decode('utf-8')
         r = fn(url)
         client.set("count:{}".format(url), 0)
-        client.setex("{}".format(url), 10, r)
+        client.setex("result:{}".format(url), 10, r)
         return r
     return wrapper
 
